@@ -9,8 +9,8 @@ AuthRouter.post('/register', async (req, res) => {
     const { email, name, password } = registerSchema.parse(req.body);
     const password_hash = await bcrypt.hash(password, 10);
     const user = await knex('users').insert({ email, name, password_hash }).returning('*');
-    const token = generateToken(user.id);
-    res.status(201).json({ token });
+    const token = generateToken(user[0].id);
+    res.status(201).json({ user: user[0], token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
